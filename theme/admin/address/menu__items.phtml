@@ -1,0 +1,42 @@
+<?php $csrf = $form->csrfToken(); ?>
+<?php foreach($items as $item): ?>
+    <?php
+        $std_pars = [
+            'id'   => $item->id->value,
+            'type' => $type
+        ];
+    ?>
+    <li class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1"><?= $item->name->safe ?></h5>
+            <div>
+                <div class="btn-group btn-group-sm" role="group" aria-label="Action">
+                    <button class="btn btn-secondary btn-item-edit" title="Rename" data-info="<?= hs(json_encode(['id'=>$item->id,'name'=>$item->name->safe])) ?>">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <?php if($child): ?>
+                    <a href="<?= $this->router->to('adminAddressSingle', ['type'=>$child->type],['parent'=>$item->id->value]) ?>" class="btn btn-secondary" title="Rename">
+                        <i class="fas fa-list-ul"></i>
+                    </a>
+                    <?php endif; ?>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button id="addr-action-<?= $item->id ?>" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                        <div class="dropdown-menu" aria-labelledby="addr-action-<?= $item->id ?>">
+                            <a class="dropdown-item"
+                                data-toggle="confirm"
+                                data-text="Are you sure want to remove this item?"
+                                data-btn-type="danger"
+                                href="<?= $this->router->to('adminAddressRemove', $std_pars, ['noob'=>$csrf,'parent'=>$pid]) ?>">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <small>
+            <span title="Created">
+                <i class="far fa-calendar-plus"></i>
+                <?= $item->created->format('M d, Y H:i') ?>
+            </span>
+        </small>
+    </li>
+<?php endforeach; ?>

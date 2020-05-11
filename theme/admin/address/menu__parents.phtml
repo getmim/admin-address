@@ -1,0 +1,21 @@
+<div class="card">
+    <div class="list-group list-group-flush">
+        <?php foreach($items as $item): ?>
+            <?php
+                $next = $this->router->to('adminAddressSingle', ['type'=>$child->type], ['parent'=>$item->id->value]);
+            ?>
+            <a href="<?= $next ?>" class="list-group-item list-group-item-action<?= ($item->id->value == $pid?' active':'') ?>">
+                <div class="d-flex w-100 justify-content-between">
+                    <div class="list-group-item-label"><?= $item->name->safe ?></div>
+                </div>
+                <small style="display:block" class="text-truncate">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item" title="Updated on">
+                            <?= $item->created->format('M d, Y H:i') ?>
+                        </li>
+                    </ul>
+                </small>
+            </a>
+        <?php endforeach; ?>
+    </div>
+</div>

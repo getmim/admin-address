@@ -1,0 +1,108 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white navbar-shadow">
+    <div class="navbar-multiline mr-auto">
+        <span class="navbar-brand" href="#0"><?= $item->label ?> Editor</span>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="<?= $this->router->to('adminHome') ?>">Home</a></li>
+                <li class="breadcrumb-item"><a href="<?= $this->router->to('adminSetting') ?>">Setting</a></li>
+                <?php foreach($bcrumb as $label => $link): ?>
+                    <?php if($link != '#'): ?>
+                        <li class="breadcrumb-item"><a href="<?= $link ?>"><?= $label ?></a></li>
+                    <?php else: ?>
+                        <li class="breadcrumb-item active" aria-current="page"><?= $label ?></li>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </ol>
+        </nav>
+    </div>
+    <button class="btn btn-primary btn-item-create" type="button" data-toggle="modal" data-target="#editor">Create New</button>
+</nav>
+
+<div class="container p-3">
+    <div class="row">
+        <div class="col-md-3">
+            <?php if($parents): ?>
+                <?= $this->partial('address/menu__parents', ['items'=>$parents, 'pid'=>$parent_id, 'child'=>$item]) ?>
+            <?php endif; ?>
+        </div>
+        <div class="col-md-6">
+            <?php if($items): ?>
+            <ul class="list-group list-group-flush card mb-3">
+                <?= $this->partial('address/menu__items', ['items'=>$items, 'type'=>$item->type, 'child'=>$child, 'form'=>$forms['remove'], 'pid'=>$parent_id]) ?>
+            </ul>
+            <?php endif; ?>
+        </div>
+        <div class="col-md-3">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div>Total item: <?= number_format(count($items??[])); ?></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="POST" class="modal fade" id="editor" tabindex="-1" role="dialog" aria-labelledby="editor-title" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editor-title">Create new item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <?= $forms['create']->csrfField('noob') ?>
+                <?= $forms['create']->field('name') ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<?php
+    $std_url = $this->router->to('adminAddressEdit', 
+    [
+        'type' => $item->type,
+        'id'   => 'ITEM_ID'
+    ],
+    [
+        'ref'  => $this->req->url,
+        'parent' => $parent_id
+    ]);
+?>
+<script>
+    var cItem = null;
+    var cUrl  = '<?= $std_url ?>'
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        $('#editor')
+        .on('show.bs.modal', () => {
+            let action = cUrl.replace('ITEM_ID', cItem.id)
+
+            if(cItem.id){
+                $('#editor-title').text('Edit item name')
+            }else{
+                $('#editor-title').text('Create new item')
+            }
+
+            $('#editor').attr('action', action)
+            $('#admin-addr-create-fld-name').val(cItem.name)
+        })
+        .on('shown.bs.modal', e => {
+            $('#admin-addr-create-fld-name').select()
+        })
+
+        $('.btn-item-edit').click(e => {
+            cItem = $(e.currentTarget).data('info')
+            $('#editor').modal('show')
+        })
+
+        $('.btn-item-create').click(e => {
+            cItem = { id:0, name:'' }
+        })
+    }, false);
+</script>
