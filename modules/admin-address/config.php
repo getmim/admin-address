@@ -2,7 +2,7 @@
 
 return [
     '__name' => 'admin-address',
-    '__version' => '0.0.1',
+    '__version' => '0.0.2',
     '__git' => 'git@github.com:getmim/admin-address.git',
     '__license' => 'MIT',
     '__author' => [
@@ -24,6 +24,9 @@ return [
             ],
             [
                 'lib-form' => NULL
+            ],
+            [
+                'admin-setting' => NULL
             ]
         ],
         'optional' => []
